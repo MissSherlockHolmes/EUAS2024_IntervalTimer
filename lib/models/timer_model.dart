@@ -1,17 +1,24 @@
-// This will define the structure of a timer session.
 class TimerModel {
-  int workTime;
-  int restTime;
-  int repeatCount;
+  int? workTime;
+  int? restTime;
+  String? id; // Unique ID for Firestore
 
-  TimerModel({this.workTime, this.restTime, this.repeatCount});
+  TimerModel({this.workTime, this.restTime, this.id});
 
-  // Method to convert TimerModel to Map for Firebase
+  // Convert TimerModel to Map for Firebase
   Map<String, dynamic> toMap() {
     return {
       'workTime': workTime,
       'restTime': restTime,
-      'repeatCount': repeatCount,
     };
+  }
+
+  // Create a TimerModel from a Firestore document
+  factory TimerModel.fromFirestore(Map<String, dynamic> firestore) {
+    return TimerModel(
+      workTime: firestore['workTime'],
+      restTime: firestore['restTime'],
+      id: firestore['id'],
+    );
   }
 }
