@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "228403487278",
+    "project_id": "interval-timer-45732",
+    "storage_bucket": "interval-timer-45732.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228403487278:android:ca3ced18701091d30075bf",
+        "android_client_info": {
+          "package_name": "ee.eek.interval_timer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAi_E83mFncGpdo1MZCDLJuhdHEeUX5Tts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

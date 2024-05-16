@@ -1,0 +1,1 @@
+ /Users/missherlock/StudioProjects/EUAS2024_IntervalTimer/.dart_tool/flutter_build/2bf35a59dcfd6db2a311fec6c97e6921/native_assets.yaml: 
