@@ -1,38 +1,35 @@
-// lib/views/countdown_timer_page.dart
+// countdown_timer_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/countdown_controller.dart';
-import 'timer_list_screen.dart';
+import 'saved_intervals_screen.dart'; // Import the saved intervals screen
 
-class CountdownTimerPage extends StatelessWidget {
-  final List<TextEditingController> _controllers = [TextEditingController()];
+class CountdownTimerPage extends StatefulWidget {
   final String timerName;
   final bool showBackButton;
 
   CountdownTimerPage({Key? key, required this.timerName, required this.showBackButton}) : super(key: key);
 
   @override
+  _CountdownTimerPageState createState() => _CountdownTimerPageState();
+}
+
+class _CountdownTimerPageState extends State<CountdownTimerPage> {
+  final List<TextEditingController> _controllers = [TextEditingController()];
+  List<String> savedIntervals = []; // Track saved intervals
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(timerName),
-        leading: showBackButton
+        title: Text(widget.timerName),
+        leading: widget.showBackButton
             ? IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         )
             : null,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => TimerListScreen()),
-              );
-            },
-            icon: Icon(Icons.list),
-          ),
-        ],
+        actions: [],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -97,29 +94,75 @@ class CountdownTimerPage extends StatelessWidget {
                 ),
               ),
             ),
-            FloatingActionButton(
-              heroTag: 'unique_tag_for_fab_in_timer_list_screen',
-              onPressed: _controllers.length < 5 ? () {
-                _controllers.add(TextEditingController());
-                context.read<CountdownController>().addInterval(_controllers.last);
-              } : null,
-              tooltip: 'Add Interval',
-              child: Icon(Icons.add),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to the screen displaying saved intervals
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SavedIntervalsScreen(savedIntervals: savedIntervals),
+                      ),
+                    );
+                  },
+                  child: Text('View Saved Intervals'),
+                ),
+              ],
             ),
-            FloatingActionButton(
-              heroTag: 'unique_tag_for_fab_inlalalalalalala',
-              onPressed: () {
-                if (_controllers.isNotEmpty) {
-                  _controllers.removeLast();
-                  context.read<CountdownController>().removeLastInterval();
-                }
-              },
-              tooltip: 'Remove Last Interval',
-              child: Icon(Icons.remove),
+            SizedBox(height: 16), // Added for spacing
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: _saveIntervals,
+                  child: Text('Save'),
+                ),
+                SizedBox(width: 16), // Added for spacing
+                FloatingActionButton(
+                  heroTag: 'unique_tag_for_fab_in_timer_list_screen',
+                  onPressed: _addInterval,
+                  tooltip: 'Add Interval',
+                  child: Icon(Icons.add),
+                ),
+                SizedBox(width: 16), // Added for spacing
+                FloatingActionButton(
+                  heroTag: 'unique_tag_for_fab_inlalalalalalala',
+                  onPressed: _removeInterval,
+                  tooltip: 'Remove Last Interval',
+                  child: Icon(Icons.remove),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _saveIntervals() {
+    final List<String> intervals = _controllers.map((controller) => controller.text).where((text) => text.isNotEmpty).toList();
+    final String intervalsString = intervals.join('-');
+    print('Intervals: $intervalsString');
+    setState(() {
+      savedIntervals.add(intervalsString); // Add saved intervals to the list
+    });
+  }
+
+  void _addInterval() {
+    if (_controllers.length < 5) {
+      setState(() {
+        _controllers.add(TextEditingController());
+      });
+    }
+  }
+
+  void _removeInterval() {
+    if (_controllers.length > 1) {
+      setState(() {
+        _controllers.removeLast();
+      });
+    }
   }
 }
