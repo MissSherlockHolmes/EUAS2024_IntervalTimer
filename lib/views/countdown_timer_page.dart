@@ -99,11 +99,11 @@ class _CountdownTimerPageState extends State<CountdownTimerPage> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Navigate to the screen displaying saved intervals
+                    // Navigate to the screen displaying saved intervals, passing the callback function to fill intervals
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SavedIntervalsScreen(savedIntervals: savedIntervals),
+                        builder: (context) => SavedIntervalsScreen(savedIntervals: savedIntervals, fillIntervalsCallback: _fillIntervals),
                       ),
                     );
                   },
@@ -164,5 +164,15 @@ class _CountdownTimerPageState extends State<CountdownTimerPage> {
         _controllers.removeLast();
       });
     }
+  }
+
+  void _fillIntervals(List<String> intervals) {
+    setState(() {
+      // Clear existing controllers and add new ones based on intervals
+      _controllers.clear();
+      for (var interval in intervals) {
+        _controllers.add(TextEditingController(text: interval));
+      }
+    });
   }
 }
