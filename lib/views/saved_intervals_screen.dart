@@ -1,11 +1,11 @@
-// saved_intervals_screen.dart
 import 'package:flutter/material.dart';
 
 class SavedIntervalsScreen extends StatelessWidget {
   final List<String> savedIntervals;
   final Function(List<String>) fillIntervalsCallback; // Callback function to fill intervals in CountdownTimerPage
+  final Function(int) deleteIntervalCallback; // Callback function to delete intervals in CountdownTimerPage
 
-  SavedIntervalsScreen({Key? key, required this.savedIntervals, required this.fillIntervalsCallback}) : super(key: key);
+  SavedIntervalsScreen({Key? key, required this.savedIntervals, required this.fillIntervalsCallback, required this.deleteIntervalCallback}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +26,13 @@ class SavedIntervalsScreen extends StatelessWidget {
               // Navigate back to the CountdownTimerPage
               Navigator.pop(context);
             },
+            trailing: IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                // Call the callback function to delete the interval
+                deleteIntervalCallback(index);
+              },
+            ),
           );
         },
       ),

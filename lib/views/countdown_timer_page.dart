@@ -1,6 +1,6 @@
-// countdown_timer_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../controllers/countdown_controller.dart';
 import 'saved_intervals_screen.dart'; // Import the saved intervals screen
 
@@ -17,6 +17,24 @@ class CountdownTimerPage extends StatefulWidget {
 class _CountdownTimerPageState extends State<CountdownTimerPage> {
   final List<TextEditingController> _controllers = [TextEditingController()];
   List<String> savedIntervals = []; // Track saved intervals
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedIntervals(); // Load saved intervals when the screen initializes
+  }
+
+  void _loadSavedIntervals() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      savedIntervals = prefs.getStringList('savedIntervals') ?? [];
+    });
+  }
+
+  void _saveIntervalsToDevice() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('savedIntervals', savedIntervals);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +121,7 @@ class _CountdownTimerPageState extends State<CountdownTimerPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SavedIntervalsScreen(savedIntervals: savedIntervals, fillIntervalsCallback: _fillIntervals),
+                        builder: (context) => SavedIntervalsScreen(savedIntervals: savedIntervals, fillIntervalsCallback: _fillIntervals, deleteIntervalCallback: _deleteInterval),
                       ),
                     );
                   },
@@ -147,6 +165,7 @@ class _CountdownTimerPageState extends State<CountdownTimerPage> {
     print('Intervals: $intervalsString');
     setState(() {
       savedIntervals.add(intervalsString); // Add saved intervals to the list
+      _saveIntervalsToDevice(); // Save intervals to device
     });
   }
 
@@ -173,6 +192,13 @@ class _CountdownTimerPageState extends State<CountdownTimerPage> {
       for (var interval in intervals) {
         _controllers.add(TextEditingController(text: interval));
       }
+    });
+  }
+
+  void _deleteInterval(int index) {
+    setState(() {
+      savedIntervals.removeAt(index);
+      _saveIntervalsToDevice(); // Save updated intervals to device
     });
   }
 }
